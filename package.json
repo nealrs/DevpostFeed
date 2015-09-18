@@ -1,0 +1,22 @@
+{
+  "name": "DevpostFeed",
+  "version": "1.0.0",
+  "description": "Electron tray app for Devpost notification feed",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "electron-packager . Example --platform=darwin --arch=x64 --version=0.30.3 --ignore=node_modules/electron --icon=Icon.icns",
+    "start": "electron ."
+  },
+  "author": "Neal Shyam",
+  "license": "ISC",
+  "dependencies" : {
+    "zombie"     : "latest",
+    "assert"     : "1.3.0",
+    "menubar"    : "latest"
+  },
+  "devDependencies": {
+    "electron-packager": "^5.0.1",
+    "electron-prebuilt": "0.30.3"
+  }
+}
