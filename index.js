@@ -1,12 +1,15 @@
+/* DEM IMPORTS THO! */
 var menubar = require('menubar');
 var browser = require("zombie");
 var assert = require("assert");
 var fs = require('fs');
+var datauri = require('datauri');
 
-// PARAMS & VARS
+/* CONFIG VARS */
 var loginURL = 'https://secure.devpost.com/users/login/';
 var feedURL = 'http://devpost.com/notifications.json?limit=30';
-
+var feedURI = new datauri();
+var feedHTML;
 
 // get login params from config file.
 var name, user, pass;
@@ -24,38 +27,36 @@ catch (err) {
   console.log(err);
 }
 
-/* ------------------------------ */
-
 /* SCRAPER STUFF */
 // launch browser & get down to business
-const b = new browser();
-
-// Login & go to edit software form
+b = new browser();
 b.visit(loginURL, function () {
   b.
     fill("user[email]", user).
     fill("user[password]", pass).
     pressButton("commit", function() {
       assert.ok(b.success);
-      console.log(">> Logged in as "+user);
+      console.log(">> Log in OK");
       b.fetch(feedURL).then(function(response) {
-        console.log('Status code:', response.status);
+        console.log('>> Feed OK');
         if (response.status === 200)
           return response.json();
         })
         .then(function(text) {
-          var feed = text;
-          var feedJSON = JSON.stringify(text.notifications, null, 2);
+          // general feed HTML & convert to dataURI
+          var json = JSON.stringify(text.notifications, null, 2);
+          feedHTML = feed2html( JSON.parse(json));
+          console.log('>> HTML created');
+          //console.log(feedHTML);
+          //console.log( mb.getOption('index') );
+          mb.setOption('index', feedHTML);
+          console.log('>> READY');
+          mb.showWindow();
+          //console.log( mb.getOption('index') );
 
-          // write feed HTML to local file
-          fs.writeFile('feed.html', feed2html( JSON.parse(feedJSON) ), function (err) {
-            if (err) return console.log(err);
-            console.log('wrote new feed to index.html');
-          });
-          //b.close();
         })
         .catch(function(error) {
-          console.log('Network error');
+          console.log('js / network error');
         });
     });
 });
@@ -65,7 +66,7 @@ b.visit(loginURL, function () {
 var mb = menubar({
   'width' : 350,
   'height' : 400,
-  'index' : 'file:///Users/neal/Desktop/feed/feed.html'
+  'index' : feedHTML
 });
 
 /*
@@ -75,18 +76,10 @@ mb.once('show', function () {
 */
 
 mb.on('ready', function ready () {
-  console.log('app is ready');
-  /*fs.writeFile('index.html', feed, function (err) {
-    if (err) return console.log(err);
-    console.log('wrote new feed to index.html');
-  });*/
-
-  //var x = mb.getOption('index');
-  //console.log(x);
-  //mb.setOption('index', 'file:///Users/neal/Desktop/feed/feed.html');
+  console.log('>> Wait');
 });
 
-
+/* ITERATE OVER JSON & CREATE HTML PAYLOAD */
 function feed2html (arr) {
   var data = "<html><head><style>body{padding:10px; color:#575553;} a{color:#003e54; text-decoration:none;} img{padding-right:5px;}</style></head><body><h3>"+name+", you're so popular!</h3>";
   // iterate over notifications
@@ -106,15 +99,12 @@ function feed2html (arr) {
         case 'user followed':
           verb = "followed you";
           break;
-
         case 'software liked':
           verb = "liked ";
           break;
-
         case 'update commented on':
           verb = "commented on ";
           break;
-
         default:
           verb = "???";
         }
@@ -133,6 +123,11 @@ function feed2html (arr) {
   }
 
   data += "<p>Th-th-th-that's all folks!</p><p><img alt='Devpost' src='http://devpost0.assetspost.com/assets/shared/devpost_logo-646bdf6ac6663230947a952f8d354cad.svg' height ='30px'></p></body></html>";
-  console.log(data);
-  return data;
+  //console.log(data);
+
+  feedURI.format('.html', data);
+  //console.log(feedURI.content+'\n\n');
+  //console.log('ok to open window - i think');
+
+  return feedURI.content;
 }
