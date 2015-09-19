@@ -1,8 +1,12 @@
-## [VIDEO DEMO](https://youtu.be/HDJnJXE7jcI)
+# DevpostFeed
+
+An electron menubar app for your Devpost notification feed
+
+[DEMO VIDEO](https://youtu.be/HDJnJXE7jcI)
 
 ## Wut?
 
-[@niuage](http://devpost.com/niuage) created an awesome [notification feed](http://devpost.com/software/devpost-notification-center) for likes, comments, and follows, but I don't like logging in to see it. So I thought to my self, wouldn't it be cool to make a little menubar app to show me my notifications? Sounds like a great [Electron / LevelUp2](http://levelup2.devpost.com) project. 
+[@niuage](http://devpost.com/niuage) created an awesome [notification feed](http://devpost.com/software/devpost-notification-center) for likes, comments, and follows, but I don't like logging in to see it. So I thought to my self, wouldn't it be cool to make a little menubar app to show me my notifications? Sounds like a great [Electron / LevelUp2](http://levelup2.devpost.com) project.
 
 After a little prodding, Robin showed me that there was [json feed for notifications](http://devpost.com/notifications.json?limit=30)&mdash;which is web accessible, provided you're authenticated. That meant I just had to automate a Devpost login ([which I've done before](http://devpost.com/software/cpupdate)), grab the json, process it into some pretty HTML, and display it in an Electron app. Easy peasy, right? Wrong.
 
@@ -63,8 +67,6 @@ Once I had updated node, npm, and everything else, I was able to login, pull my 
 
 5. Perhaps obviously, @niuage's feed is designed to work on Devpost and Devpost alone. So, a lot of avatar URLs, are listed as `//foo.bar/avatar.png` and omit the `http:`. A little substring searching & appending fixed that.
 
-6. Turns out, you don't need to write the HTML to a file first,
-
-7. I didn't get a chance to incorporate desktop notifications / reloads / a waiting screen / etc. That's all todo (if ever).
+6. I didn't get a chance to incorporate desktop notifications / reloads / a waiting screen / etc. That's all todo (if ever).
 
 7. My node environment at work is totally fubar'd, so I had to do all this at home on my aging MBA.
