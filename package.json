@@ -14,11 +14,12 @@
   },
   "author": "Neal Shyam",
   "license": "ISC",
-  "dependencies" : {
-    "zombie"     : "latest",
-    "assert"     : "1.3.0",
-    "menubar"    : "latest",
-    "datauri"    : "latest"
+  "dependencies": {
+    "assert": "1.3.0",
+    "datauri": "latest",
+    "menubar": "latest",
+    "moment-timezone": "^0.4.0",
+    "zombie": "latest"
   },
   "devDependencies": {
     "electron-packager": "^5.0.1",

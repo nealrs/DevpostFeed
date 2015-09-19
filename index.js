@@ -4,10 +4,11 @@ var browser = require("zombie");
 var assert = require("assert");
 var fs = require('fs');
 var datauri = require('datauri');
+var moment = require('moment-timezone');
 
 /* CONFIG VARS */
 var loginURL = 'https://secure.devpost.com/users/login/';
-var feedURL = 'http://devpost.com/notifications.json?limit=30';
+var feedURL = 'http://devpost.com/notifications.json?limit=50';
 var feedURI = new datauri();
 var feedHTML;
 
@@ -69,11 +70,11 @@ var mb = menubar({
   'index' : feedHTML
 });
 
-/*
+
 mb.once('show', function () {
   mb.window.openDevTools();
 });
-*/
+
 
 mb.on('ready', function ready () {
   console.log('>> Wait');
@@ -81,10 +82,12 @@ mb.on('ready', function ready () {
 
 /* ITERATE OVER JSON & CREATE HTML PAYLOAD */
 function feed2html (arr) {
-  var data = "<html><head><style>body{padding:10px; color:#575553;} a{color:#003e54; text-decoration:none;} img{padding-right:5px;}</style></head><body><h3>"+name+", you're so popular!</h3>";
+  var data = "<html><head><style>body{color:#575553; margin:0;} a{color:#003e54; text-decoration:none;} img{padding-right:5px;} .header{width:100%; background-color:#003e54; color:#7FDBFF; padding: 10px; } .main{padding:10px;}</style></head><body><div class='header'><h3>"+name+", you're so popular!</h3></div><div class='main'>";
   // iterate over notifications
   for(var i=0;i<arr.length;i++){
       var obj = arr[i];
+
+      //var time = moment(obj.updated_at).format('M/D h:mma');
 
       var authorURL = obj.author.url;
       var authorName = obj.author.display_name;
@@ -119,10 +122,11 @@ function feed2html (arr) {
       }
 
       data += "<p><a href='"+authorURL+"' target='_blank'><img src='"+authorAvatar+"' style='height:40px; border-radius:300px; vertical-align:middle;'> "+authorName+"</a> "+verb+"<a href='"+targetURL+"' target='_blank'>"+targetName+"</a>.</p>";
+      //data += "<p><a href='"+authorURL+"' target='_blank'><img src='"+authorAvatar+"' style='height:40px; border-radius:300px; vertical-align:middle;'> "+authorName+"</a> "+verb+"<a href='"+targetURL+"' target='_blank'>"+targetName+"</a>. ("+time+")</p>";
       //console.log(data);
   }
 
-  data += "<p>Th-th-th-that's all folks!</p><p><img alt='Devpost' src='http://devpost0.assetspost.com/assets/shared/devpost_logo-646bdf6ac6663230947a952f8d354cad.svg' height ='30px'></p></body></html>";
+  data += "<p>Th-th-th-that's all folks!</p><p><img alt='Devpost' src='http://devpost0.assetspost.com/assets/shared/devpost_logo-646bdf6ac6663230947a952f8d354cad.svg' height ='30px'></p></div></body></html>";
   //console.log(data);
 
   feedURI.format('.html', data);
